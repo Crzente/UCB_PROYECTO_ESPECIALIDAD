@@ -1,0 +1,54 @@
+﻿Analyzing login_app...                                          
+
+   info - Parameters ''id', 'name', 'academicYear', 'createdAt', and 'isActive'' could be super parameters - lib\data\models\course_bundle_model.dart:4:9 - use_super_parameters
+   info - Parameters ''id', 'name', 'description', 'code', 'credits', 'type', 'isMandatory', and 'teacherId'' could be super parameters - lib\data\models\course_model.dart:4:9 - use_super_parameters
+   info - Parameters ''id', 'studentId', 'groupId', 'studentName', 'groupName', and 'courseName'' could be super parameters - lib\data\models\enrollment_model.dart:4:9 - use_super_parameters
+   info - Parameters ''id', 'groupId', 'name', and 'weight'' could be super parameters - lib\data\models\evaluation_period_model.dart:4:9 - use_super_parameters
+   info - Parameters ''id', 'enrollmentId', 'evaluationPeriodId', and 'score'' could be super parameters - lib\data\models\grade_model.dart:4:9 - use_super_parameters
+   info - Parameters ''id', 'courseId', 'teacherId', 'year', 'name', 'status', 'bundleId', 'courseName', 'teacherName', and 'studentCount'' could be super parameters - lib\data\models\group_model.dart:4:9 - use_super_parameters
+   info - Parameters ''id', 'userId', 'studentCode', 'status', and 'user'' could be super parameters - lib\data\models\student_model.dart:6:9 - use_super_parameters
+   info - Parameters ''id', 'userId', 'teacherCode', 'status', and 'user'' could be super parameters - lib\data\models\teacher_model.dart:6:9 - use_super_parameters
+   info - Parameters ''id', 'email', 'name', 'role', and 'status'' could be super parameters - lib\data\models\user_model.dart:4:9 - use_super_parameters
+warning - Unused import: 'package:sqflite/sqflite.dart' - lib\data\repositories\academic_config_repository_impl.dart:1:8 - unused_import
+   info - 'Table.fromTextArray' is deprecated and shouldn't be used. Use TableHelper.fromTextArray() instead - lib\data\repositories\academic_year_repository_impl.dart:339:15 - deprecated_member_use
+   info - 'Table.fromTextArray' is deprecated and shouldn't be used. Use TableHelper.fromTextArray() instead - lib\data\repositories\academic_year_repository_impl.dart:485:19 - deprecated_member_use
+   info - The imported package 'equatable' isn't a dependency of the importing package - lib\domain\entities\course_bundle.dart:1:8 - depend_on_referenced_packages
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\presentation\screens\dashboard\tabs\academic_screen.dart:372:15 - deprecated_member_use
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\presentation\screens\dashboard\tabs\academic_screen.dart:803:35 - deprecated_member_use
+   info - Statements in an if should be enclosed in a block - lib\presentation\screens\dashboard\tabs\academic_screen.dart:820:39 - curly_braces_in_flow_control_structures
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\dashboard\tabs\admin_home_tab.dart:241:32 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\dashboard\tabs\admin_home_tab.dart:261:36 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\dashboard\tabs\admin_home_tab.dart:332:28 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\dashboard\tabs\admin_settings_tab.dart:87:48 - deprecated_member_use
+   info - 'MaterialStateProperty' is deprecated and shouldn't be used. Use WidgetStateProperty instead. Moved to the Widgets layer to make code available outside of Material. This feature was deprecated after v3.19.0-0.3.pre - lib\presentation\screens\dashboard\tabs\bundle_detail_screen.dart:237:30 - deprecated_member_use
+   info - 'MaterialStateProperty' is deprecated and shouldn't be used. Use WidgetStateProperty instead. Moved to the Widgets layer to make code available outside of Material. This feature was deprecated after v3.19.0-0.3.pre - lib\presentation\screens\dashboard\tabs\grades_tab.dart:243:28 - deprecated_member_use
+   info - Unnecessary use of 'toList' in a spread - lib\presentation\screens\dashboard\tabs\grades_tab.dart:280:16 - unnecessary_to_list_in_spreads
+warning - The value of the local variable 'totalWeight' isn't used - lib\presentation\screens\dashboard\tabs\grades_tab.dart:294:20 - unused_local_variable
+warning - Unused import: '../../../../domain/entities/evaluation_period.dart' - lib\presentation\screens\dashboard\tabs\group_detail_screen.dart:7:8 - unused_import
+warning - The value of the field '_searchController' isn't used - lib\presentation\screens\dashboard\tabs\history_tab.dart:18:31 - unused_field
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\presentation\screens\dashboard\tabs\history_tab.dart:101:27 - deprecated_member_use
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\presentation\screens\dashboard\tabs\history_tab.dart:181:9 - deprecated_member_use
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\presentation\screens\dashboard\tabs\history_tab.dart:206:9 - deprecated_member_use
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\presentation\screens\dashboard\tabs\history_tab.dart:221:9 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\dashboard\tabs\history_tab.dart:284:42 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\dashboard\tabs\history_tab.dart:285:40 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\dashboard\tabs\personal_management_tab.dart:228:37 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\dashboard\tabs\personal_management_tab.dart:243:61 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\dashboard\tabs\personal_management_tab.dart:341:36 - deprecated_member_use
+   info - Use a 'SizedBox' to add whitespace to a layout - lib\presentation\screens\dashboard\tabs\personal_management_tab.dart:492:39 - sized_box_for_whitespace
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\presentation\screens\dashboard\tabs\personal_management_tab.dart:523:19 - deprecated_member_use
+   info - Use a 'SizedBox' to add whitespace to a layout - lib\presentation\screens\dashboard\tabs\personal_management_tab.dart:578:39 - sized_box_for_whitespace
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\presentation\screens\dashboard\tabs\personal_management_tab.dart:600:19 - deprecated_member_use
+warning - The value of the local variable 'user' isn't used - lib\presentation\screens\dashboard\tabs\student_grades_tab.dart:34:11 - unused_local_variable
+warning - The value of the local variable 'totalMaxWeight' isn't used - lib\presentation\screens\dashboard\tabs\student_grades_tab.dart:111:12 - unused_local_variable
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\dashboard\tabs\student_management_screen.dart:109:33 - deprecated_member_use
+warning - The value of the local variable 'status' isn't used - lib\presentation\screens\dashboard\tabs\student_management_screen.dart:122:17 - unused_local_variable
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\dashboard\tabs\student_management_screen.dart:130:44 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\dashboard\tabs\teacher_assignment_tab.dart:83:33 - deprecated_member_use
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\presentation\screens\dashboard\tabs\teacher_assignment_tab.dart:107:19 - deprecated_member_use
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\presentation\screens\dashboard\tabs\teacher_assignment_tab.dart:153:19 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\dashboard\tabs\teacher_assignment_tab.dart:285:57 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\dashboard\tabs\teacher_management_tab.dart:101:33 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\dashboard\tabs\teacher_management_tab.dart:122:46 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\screens\dashboard\teacher_dashboard.dart:143:40 - deprecated_member_use
+
