@@ -2,24 +2,15 @@ import '../../domain/entities/course.dart';
 
 class CourseModel extends Course {
   const CourseModel({
-    required String id,
-    required String name,
-    String? description,
-    String? code,
-    int credits = 0,
-    String type = 'mixed',
-    bool isMandatory = true,
-    String? teacherId,
-  }) : super(
-         id: id,
-         name: name,
-         description: description,
-         code: code,
-         credits: credits,
-         type: type,
-         isMandatory: isMandatory,
-         teacherId: teacherId,
-       );
+    required super.id,
+    required super.name,
+    super.description,
+    super.code,
+    super.credits = 0,
+    super.type = 'mixed',
+    super.isMandatory = true,
+    super.teacherId,
+  });
 
   factory CourseModel.fromMap(Map<String, dynamic> map) {
     return CourseModel(

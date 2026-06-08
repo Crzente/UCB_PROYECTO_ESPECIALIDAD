@@ -2,16 +2,11 @@ import '../../domain/entities/grade.dart';
 
 class GradeModel extends Grade {
   const GradeModel({
-    required String id,
-    required String enrollmentId,
-    required String evaluationPeriodId,
-    double? score,
-  }) : super(
-         id: id,
-         enrollmentId: enrollmentId,
-         evaluationPeriodId: evaluationPeriodId,
-         score: score,
-       );
+    required super.id,
+    required super.enrollmentId,
+    required super.evaluationPeriodId,
+    super.score,
+  });
 
   factory GradeModel.fromMap(Map<String, dynamic> map) {
     return GradeModel(

@@ -135,7 +135,7 @@ class _TeacherManagementTabState extends State<TeacherManagementTab> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -160,7 +160,7 @@ class _TeacherManagementTabState extends State<TeacherManagementTab> {
             leading: Stack(
               children: [
                 CircleAvatar(
-                  backgroundColor: Colors.blue.withOpacity(0.1),
+                  backgroundColor: Colors.blue.withValues(alpha: 0.1),
                   backgroundImage:
                       (teacher.profileImage != null &&
                           teacher.profileImage!.isNotEmpty)
@@ -352,7 +352,7 @@ class _TeacherManagementTabState extends State<TeacherManagementTab> {
                               ),
                             ),
                           );
-                        }).toList(),
+                        }),
                         const SizedBox(height: 12),
                       ],
                     );
@@ -757,7 +757,7 @@ class _TeacherManagementTabState extends State<TeacherManagementTab> {
                     const SizedBox(height: 8),
 
                     DropdownButtonFormField<String>(
-                      value: selectedGroup,
+                      initialValue: selectedGroup,
                       decoration: const InputDecoration(labelText: "Escalafón"),
                       items: gradosPorGrupo.keys
                           .map(
@@ -773,7 +773,7 @@ class _TeacherManagementTabState extends State<TeacherManagementTab> {
                     ),
                     const SizedBox(height: 12),
                     DropdownButtonFormField<String>(
-                      value: selectedGrade,
+                      initialValue: selectedGrade,
                       decoration: const InputDecoration(labelText: "Grado"),
                       items: gradosPorGrupo[selectedGroup]!
                           .map(
@@ -807,13 +807,16 @@ class _TeacherManagementTabState extends State<TeacherManagementTab> {
               ),
               ElevatedButton(
                 onPressed: () async {
+                  final userProvider = context.read<UserManagementProvider>();
+                  final teacherProvider = context.read<TeacherProvider>();
+
                   // Update User Info if name changed
                   if (teacher.user != null &&
                       nameCtrl.text != teacher.user!.name) {
                     final updatedUser = teacher.user!.copyWith(
                       name: nameCtrl.text,
                     );
-                    await context.read<UserManagementProvider>().updateUser(
+                    await userProvider.updateUser(
                       updatedUser,
                     );
                   }
@@ -830,7 +833,7 @@ class _TeacherManagementTabState extends State<TeacherManagementTab> {
                     profileImage: base64Image,
                   );
 
-                  await context.read<TeacherProvider>().updateTeacher(
+                  await teacherProvider.updateTeacher(
                     updatedTeacher,
                   );
 
@@ -916,6 +919,9 @@ class _TeacherManagementTabState extends State<TeacherManagementTab> {
 
   void _handleDeleteTeacher(BuildContext context, Teacher teacher) async {
     final groupProvider = context.read<GroupProvider>();
+    final teacherProvider = context.read<TeacherProvider>();
+    final userProvider = context.read<UserManagementProvider>();
+
     // Check if teacher has assigned groups (historical or current)
     final hasGroups = groupProvider.groups.any(
       (g) => g.teacherId == teacher.id,
@@ -950,7 +956,7 @@ class _TeacherManagementTabState extends State<TeacherManagementTab> {
           status: 'blocked',
           user: teacher.user,
         );
-        await context.read<TeacherProvider>().updateTeacher(updatedTeacher);
+        await teacherProvider.updateTeacher(updatedTeacher);
 
         if (teacher.user != null) {
           final updatedUser = User(
@@ -960,7 +966,7 @@ class _TeacherManagementTabState extends State<TeacherManagementTab> {
             role: teacher.user!.role,
             status: 'blocked',
           );
-          await context.read<UserManagementProvider>().updateUser(updatedUser);
+          await userProvider.updateUser(updatedUser);
         }
 
         if (context.mounted) {
@@ -995,8 +1001,8 @@ class _TeacherManagementTabState extends State<TeacherManagementTab> {
       );
 
       if (confirm == true && context.mounted) {
-        await context.read<TeacherProvider>().deleteTeacher(teacher.id);
-        await context.read<UserManagementProvider>().deleteUser(teacher.userId);
+        await teacherProvider.deleteTeacher(teacher.id);
+        await userProvider.deleteUser(teacher.userId);
 
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(

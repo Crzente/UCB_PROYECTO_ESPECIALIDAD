@@ -126,11 +126,17 @@ class StudentRepositoryImpl implements StudentRepository {
   @override
   Future<void> deleteStudent(String id) async {
     final db = await _dbHelper.database;
-    // We only delete the STUDENT record, not the USER?
-    // User requested "desvincular o eliminar".
-    // If we delete the student record, the User remains but is no longer a student.
-    // This seems correct for "Desvincular".
-    // "Eliminar" might mean deleting user too, but let's stick to student record for now.
-    await db.delete('students', where: 'id = ?', whereArgs: [id]);
+    final result = await db.query('students', where: 'id = ?', whereArgs: [id]);
+    String? userId;
+    if (result.isNotEmpty) {
+      userId = result.first['user_id'] as String?;
+    }
+
+    await db.transaction((txn) async {
+      await txn.delete('students', where: 'id = ?', whereArgs: [id]);
+      if (userId != null) {
+        await txn.delete('users', where: 'id = ?', whereArgs: [userId]);
+      }
+    });
   }
 }

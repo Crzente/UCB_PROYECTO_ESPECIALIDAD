@@ -232,7 +232,7 @@ class _PersonalManagementTabState extends State<PersonalManagementTab> {
             border: Border.all(color: Colors.grey.shade100),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.02),
+                color: Colors.black.withValues(alpha: 0.02),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -247,7 +247,7 @@ class _PersonalManagementTabState extends State<PersonalManagementTab> {
               children: [
                 CircleAvatar(
                   radius: 24,
-                  backgroundColor: _getRoleColor(user.role).withOpacity(0.1),
+                  backgroundColor: _getRoleColor(user.role).withValues(alpha: 0.1),
                   backgroundImage:
                       (user.profileImage != null &&
                           user.profileImage!.isNotEmpty)
@@ -346,7 +346,7 @@ class _PersonalManagementTabState extends State<PersonalManagementTab> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        color: _getRoleColor(role).withOpacity(0.1),
+        color: _getRoleColor(role).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
@@ -618,7 +618,7 @@ class _PersonalManagementTabState extends State<PersonalManagementTab> {
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => AlertDialog(
           title: const Text("Registrar Nueva Cuenta"),
-          content: Container(
+          content: SizedBox(
             width: 400,
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -649,7 +649,7 @@ class _PersonalManagementTabState extends State<PersonalManagementTab> {
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
-                  value: role,
+                  initialValue: role,
                   decoration: const InputDecoration(
                     labelText: "Asignar Rol",
                     prefixIcon: Icon(Icons.badge_outlined),
@@ -723,7 +723,7 @@ class _PersonalManagementTabState extends State<PersonalManagementTab> {
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => AlertDialog(
           title: const Text("Modificar Información"),
-          content: Container(
+          content: SizedBox(
             width: 400,
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -745,7 +745,7 @@ class _PersonalManagementTabState extends State<PersonalManagementTab> {
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
-                  value: role,
+                  initialValue: role,
                   decoration: const InputDecoration(
                     labelText: "Rol",
                     prefixIcon: Icon(Icons.badge_outlined),

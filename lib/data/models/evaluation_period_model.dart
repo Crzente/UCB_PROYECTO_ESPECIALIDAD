@@ -2,11 +2,11 @@ import '../../domain/entities/evaluation_period.dart';
 
 class EvaluationPeriodModel extends EvaluationPeriod {
   const EvaluationPeriodModel({
-    required String id,
-    required String groupId,
-    required String name,
-    required double weight,
-  }) : super(id: id, groupId: groupId, name: name, weight: weight);
+    required super.id,
+    required super.groupId,
+    required super.name,
+    required super.weight,
+  });
 
   factory EvaluationPeriodModel.fromMap(Map<String, dynamic> map) {
     return EvaluationPeriodModel(

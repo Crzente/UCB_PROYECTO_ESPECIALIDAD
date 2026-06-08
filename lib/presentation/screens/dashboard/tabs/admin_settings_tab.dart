@@ -84,7 +84,7 @@ class _AdminSettingsTabState extends State<AdminSettingsTab> {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.purple.withOpacity(0.1),
+                          color: Colors.purple.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(

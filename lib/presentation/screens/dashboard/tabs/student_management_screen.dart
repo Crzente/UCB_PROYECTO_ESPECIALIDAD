@@ -114,6 +114,7 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
 
     if (enrollments.isEmpty) return;
 
+    if (!context.mounted) return;
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -228,11 +229,15 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
 
   void _handleDeleteStudent(BuildContext context, Student student) async {
     final enrollmentProvider = context.read<EnrollmentProvider>();
+    final studentProvider = context.read<StudentProvider>();
+    final userProvider = context.read<UserManagementProvider>();
+
     await enrollmentProvider.loadStudentEnrollments(student.userId);
     final hasEnrollments = enrollmentProvider.studentEnrollments.isNotEmpty;
 
     if (hasEnrollments) {
       // Rule: If has courses, cannot delete. Only deactivate.
+      if (!context.mounted) return;
       final confirm = await showDialog<bool>(
         context: context,
         builder: (ctx) => AlertDialog(
@@ -262,7 +267,7 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
           status: 'blocked',
           user: student.user,
         );
-        await context.read<StudentProvider>().updateStudent(updatedStudent);
+        await studentProvider.updateStudent(updatedStudent);
 
         if (student.user != null) {
           final updatedUser = User(
@@ -272,7 +277,7 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
             role: student.user!.role,
             status: 'blocked',
           );
-          await context.read<UserManagementProvider>().updateUser(updatedUser);
+          await userProvider.updateUser(updatedUser);
         }
 
         if (context.mounted) {
@@ -283,6 +288,7 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
       }
     } else {
       // Rule: No courses, delete both.
+      if (!context.mounted) return;
       final confirm = await showDialog<bool>(
         context: context,
         builder: (ctx) => AlertDialog(
@@ -309,9 +315,9 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
 
       if (confirm == true && context.mounted) {
         // Delete student
-        await context.read<StudentProvider>().deleteStudent(student.id);
+        await studentProvider.deleteStudent(student.id);
         // Delete user
-        await context.read<UserManagementProvider>().deleteUser(student.userId);
+        await userProvider.deleteUser(student.userId);
 
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -346,7 +352,7 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -367,7 +373,7 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
             leading: Stack(
               children: [
                 CircleAvatar(
-                  backgroundColor: Colors.blue.withOpacity(0.1),
+                  backgroundColor: Colors.blue.withValues(alpha: 0.1),
                   backgroundImage:
                       (student.profileImage != null &&
                           student.profileImage!.isNotEmpty)
@@ -792,7 +798,7 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
                   const SizedBox(height: 8),
 
                   DropdownButtonFormField<String>(
-                    value: selectedGroup,
+                    initialValue: selectedGroup,
                     decoration: const InputDecoration(labelText: "Escalafón"),
                     items: gradosPorGrupo.keys
                         .map((g) => DropdownMenuItem(value: g, child: Text(g)))
@@ -806,7 +812,7 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
                   ),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
-                    value: selectedGrade,
+                    initialValue: selectedGrade,
                     decoration: const InputDecoration(labelText: "Grado"),
                     items: gradosPorGrupo[selectedGroup]!
                         .map((g) => DropdownMenuItem(value: g, child: Text(g)))
@@ -846,6 +852,9 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
             ),
             ElevatedButton(
               onPressed: () async {
+                final userProvider = context.read<UserManagementProvider>();
+                final studentProvider = context.read<StudentProvider>();
+
                 // Update User Info (sync profile image and name)
                 if (student.user != null) {
                   final updatedUser = User(
@@ -856,7 +865,7 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
                     status: student.user!.status,
                     profileImage: base64Image,
                   );
-                  await context.read<UserManagementProvider>().updateUser(
+                  await userProvider.updateUser(
                     updatedUser,
                   );
                 }
@@ -878,7 +887,7 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
                   courseSeniority: int.tryParse(seniorityCtrl.text),
                   profileImage: base64Image,
                 );
-                await context.read<StudentProvider>().updateStudent(
+                await studentProvider.updateStudent(
                   updatedStudent,
                 );
                 if (context.mounted) {
@@ -953,14 +962,14 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         ListTile(
-                          tileColor: statusColor.withOpacity(0.1),
+                          tileColor: statusColor.withValues(alpha: 0.1),
                           title: Row(
                             children: [
                               Text(
                                 bundleName,
                                 style: GoogleFonts.poppins(
                                   fontWeight: FontWeight.bold,
-                                  color: statusColor.withOpacity(0.8),
+                                  color: statusColor.withValues(alpha: 0.8),
                                 ),
                               ),
                               const SizedBox(width: 8),
@@ -970,7 +979,7 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
                                   vertical: 2,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: statusColor.withOpacity(0.2),
+                                  color: statusColor.withValues(alpha: 0.2),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Row(
@@ -1015,8 +1024,8 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
                               en.courseName ?? "Materia",
                               style: TextStyle(
                                 color: status == 'En curso'
-                                    ? Colors.black
-                                    : Colors.grey,
+                                      ? Colors.black
+                                      : Colors.grey,
                               ),
                             ),
                             subtitle: Text(
@@ -1024,7 +1033,7 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
                               style: const TextStyle(fontSize: 10),
                             ),
                           );
-                        }).toList(),
+                        }),
                       ],
                     ),
                   );
@@ -1161,6 +1170,7 @@ class _StudentManagementScreenState extends State<StudentManagementScreen> {
     bool isAlreadyEnrolledInYear = false;
     String? existingCourseInYear;
 
+    if (!context.mounted) return;
     showDialog(
       context: context,
       builder: (ctx) => StatefulBuilder(

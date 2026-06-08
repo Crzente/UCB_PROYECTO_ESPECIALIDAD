@@ -53,10 +53,14 @@ class EnrollmentRepositoryImpl implements EnrollmentRepository {
   @override
   Future<List<Enrollment>> getEnrollmentsByStudent(String studentId) async {
     final db = await dbHelper.database;
-    final List<Map<String, dynamic>> maps = await db.rawQuery(
+
+    // 1. Enrollments via materias (grupos)
+    final List<Map<String, dynamic>> materialMaps = await db.rawQuery(
       '''
-      SELECT e.*, u.name as student_name, g.name as group_name, c.name as course_name, 
-             cb.id as bundle_id, cb.name as bundle_name, cb.academic_year
+      SELECT e.id, e.student_id, e.group_id, e.status,
+             u.name as student_name, g.name as group_name, c.name as course_name,
+             cb.id as bundle_id, cb.name as bundle_name, cb.academic_year,
+             NULL as grade, NULL as specialty, NULL as graduation_year, NULL as course_seniority
       FROM enrollments e
       INNER JOIN users u ON e.student_id = u.id
       INNER JOIN groups g ON e.group_id = g.id
@@ -67,7 +71,29 @@ class EnrollmentRepositoryImpl implements EnrollmentRepository {
       [studentId],
     );
 
-    return List.generate(maps.length, (i) => EnrollmentModel.fromMap(maps[i]));
+    // 2. Bundle-level enrollments (cursos sin materias todavía)
+    // Solo incluir bundles que NO tienen grupos con inscripciones ya incluidos arriba
+    final List<Map<String, dynamic>> bundleMaps = await db.rawQuery(
+      '''
+      SELECT be.id, be.student_id, be.bundle_id as group_id, be.status,
+             u.name as student_name, cb.name as group_name, '' as course_name,
+             cb.id as bundle_id, cb.name as bundle_name, cb.academic_year,
+             NULL as grade, NULL as specialty, NULL as graduation_year, NULL as course_seniority
+      FROM bundle_enrollments be
+      INNER JOIN users u ON be.student_id = u.id
+      INNER JOIN course_bundles cb ON be.bundle_id = cb.id
+      WHERE be.student_id = ?
+        AND NOT EXISTS (
+          SELECT 1 FROM enrollments e2
+          INNER JOIN groups g2 ON e2.group_id = g2.id
+          WHERE e2.student_id = be.student_id AND g2.bundle_id = be.bundle_id
+        )
+    ''',
+      [studentId],
+    );
+
+    final allMaps = [...materialMaps, ...bundleMaps];
+    return List.generate(allMaps.length, (i) => EnrollmentModel.fromMap(allMaps[i]));
   }
 
   @override
@@ -75,16 +101,15 @@ class EnrollmentRepositoryImpl implements EnrollmentRepository {
     final db = await dbHelper.database;
     final List<Map<String, dynamic>> maps = await db.rawQuery(
       '''
-      SELECT e.*, u.name as student_name, g.name as group_name, c.name as course_name,
+      SELECT be.id, be.student_id, be.bundle_id as group_id, be.status,
+             u.name as student_name, cb.name as group_name, '' as course_name,
              cb.id as bundle_id, cb.name as bundle_name, cb.academic_year,
              s.grade, s.specialty, s.graduation_year, s.course_seniority
-      FROM enrollments e
-      INNER JOIN users u ON e.student_id = u.id
-      INNER JOIN groups g ON e.group_id = g.id
-      INNER JOIN courses c ON g.course_id = c.id
-      LEFT JOIN course_bundles cb ON g.bundle_id = cb.id
+      FROM bundle_enrollments be
+      INNER JOIN users u ON be.student_id = u.id
+      INNER JOIN course_bundles cb ON be.bundle_id = cb.id
       LEFT JOIN students s ON s.user_id = u.id
-      WHERE g.bundle_id = ?
+      WHERE be.bundle_id = ?
     ''',
       [bundleId],
     );
@@ -102,10 +127,9 @@ class EnrollmentRepositoryImpl implements EnrollmentRepository {
     final List<Map<String, dynamic>> result = await db.rawQuery(
       '''
       SELECT COUNT(*) 
-      FROM enrollments e
-      JOIN groups g ON e.group_id = g.id
-      JOIN course_bundles cb ON g.bundle_id = cb.id
-      WHERE e.student_id = ? AND cb.academic_year = ?
+      FROM bundle_enrollments be
+      JOIN course_bundles cb ON be.bundle_id = cb.id
+      WHERE be.student_id = ? AND cb.academic_year = ?
     ''',
       [studentId, year],
     );
@@ -120,7 +144,14 @@ class EnrollmentRepositoryImpl implements EnrollmentRepository {
   ) async {
     final db = await dbHelper.database;
     await db.transaction((txn) async {
-      // Find all groups in this bundle
+      // First, remove from bundle_enrollments
+      await txn.delete(
+        'bundle_enrollments',
+        where: 'student_id = ? AND bundle_id = ?',
+        whereArgs: [studentId, bundleId],
+      );
+
+      // Then, find all groups in this bundle
       final List<Map<String, dynamic>> groups = await txn.query(
         'groups',
         columns: ['id'],
@@ -181,15 +212,48 @@ class EnrollmentRepositoryImpl implements EnrollmentRepository {
     String status,
   ) async {
     final db = await dbHelper.database;
-    final count = await db.rawUpdate(
-      '''
-      UPDATE enrollments 
-      SET status = ? 
-      WHERE student_id = ? 
-      AND group_id IN (SELECT id FROM groups WHERE bundle_id = ?)
-    ''',
-      [status, studentId, bundleId],
+    await db.transaction((txn) async {
+      // Update in bundle_enrollments
+      await txn.rawUpdate(
+        '''
+        UPDATE bundle_enrollments 
+        SET status = ? 
+        WHERE student_id = ? AND bundle_id = ?
+      ''',
+        [status, studentId, bundleId],
+      );
+
+      // Update in individual group enrollments
+      final count = await txn.rawUpdate(
+        '''
+        UPDATE enrollments 
+        SET status = ? 
+        WHERE student_id = ? 
+        AND group_id IN (SELECT id FROM groups WHERE bundle_id = ?)
+      ''',
+        [status, studentId, bundleId],
+      );
+      debugPrint("Updated student status: $count enrollments affected.");
+    });
+  }
+
+  @override
+  Future<void> addStudentToBundle(String studentId, String bundleId) async {
+    final db = await dbHelper.database;
+    // Generate UUID string representation since uuid package might not be immediately available here safely
+    final idList = await db.rawQuery('SELECT lower(hex(randomblob(16))) as id');
+    final String uuid = idList.first['id'] as String;
+
+    await db.insert(
+      'bundle_enrollments',
+      {
+        'id': uuid,
+        'bundle_id': bundleId,
+        'student_id': studentId,
+        'status': 'En curso',
+        'created_at': DateTime.now().toIso8601String(),
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    debugPrint("Updated student status: $count enrollments affected.");
   }
 }

@@ -4,36 +4,21 @@ import 'user_model.dart';
 
 class TeacherModel extends Teacher {
   const TeacherModel({
-    required String id,
-    required String userId,
-    String teacherCode = '',
-    String status = 'active',
-    User? user,
-    DateTime? birthDate,
-    String identityCard = '',
-    String militaryCard = '',
-    String insuranceCard = '',
-    String phone = '',
-    String grade = '',
-    String? specialty,
-    String? graduationYear,
-    String? profileImage,
-  }) : super(
-         id: id,
-         userId: userId,
-         teacherCode: teacherCode,
-         status: status,
-         user: user,
-         birthDate: birthDate,
-         identityCard: identityCard,
-         militaryCard: militaryCard,
-         insuranceCard: insuranceCard,
-         phone: phone,
-         grade: grade,
-         specialty: specialty,
-         graduationYear: graduationYear,
-         profileImage: profileImage,
-       );
+    required super.id,
+    required super.userId,
+    super.teacherCode = '',
+    super.status = 'active',
+    super.user,
+    super.birthDate,
+    super.identityCard = '',
+    super.militaryCard = '',
+    super.insuranceCard = '',
+    super.phone = '',
+    super.grade = '',
+    super.specialty,
+    super.graduationYear,
+    super.profileImage,
+  });
 
   factory TeacherModel.fromMap(Map<String, dynamic> map, {User? user}) {
     return TeacherModel(

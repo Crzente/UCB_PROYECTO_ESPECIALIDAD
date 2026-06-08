@@ -15,4 +15,5 @@ abstract class EnrollmentRepository {
     String bundleId,
     String status,
   );
+  Future<void> addStudentToBundle(String studentId, String bundleId);
 }

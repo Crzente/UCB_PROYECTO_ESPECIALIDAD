@@ -2,28 +2,17 @@ import '../../domain/entities/group.dart';
 
 class GroupModel extends Group {
   const GroupModel({
-    required String id,
-    required String courseId,
-    required String teacherId,
-    required int year,
-    required String name,
-    String status = 'active',
-    String? bundleId,
-    String? courseName,
-    String? teacherName,
-    int? studentCount,
-  }) : super(
-         id: id,
-         courseId: courseId,
-         teacherId: teacherId,
-         year: year,
-         name: name,
-         status: status,
-         bundleId: bundleId,
-         courseName: courseName,
-         teacherName: teacherName,
-         studentCount: studentCount,
-       );
+    required super.id,
+    required super.courseId,
+    required super.teacherId,
+    required super.year,
+    required super.name,
+    super.status = 'active',
+    super.bundleId,
+    super.courseName,
+    super.teacherName,
+    super.studentCount,
+  });
 
   factory GroupModel.fromMap(Map<String, dynamic> map) {
     return GroupModel(

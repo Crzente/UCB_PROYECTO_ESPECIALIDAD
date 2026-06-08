@@ -122,6 +122,17 @@ class TeacherRepositoryImpl implements TeacherRepository {
   @override
   Future<void> deleteTeacher(String id) async {
     final db = await _dbHelper.database;
-    await db.delete('teachers', where: 'id = ?', whereArgs: [id]);
+    final result = await db.query('teachers', where: 'id = ?', whereArgs: [id]);
+    String? userId;
+    if (result.isNotEmpty) {
+      userId = result.first['user_id'] as String?;
+    }
+
+    await db.transaction((txn) async {
+      await txn.delete('teachers', where: 'id = ?', whereArgs: [id]);
+      if (userId != null) {
+        await txn.delete('users', where: 'id = ?', whereArgs: [userId]);
+      }
+    });
   }
 }

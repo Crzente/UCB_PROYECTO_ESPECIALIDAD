@@ -378,6 +378,9 @@ class _ReportsTabState extends State<ReportsTab> {
 
     final enrollmentProvider = context.read<EnrollmentProvider>();
     final studentProvider = context.read<StudentProvider>();
+    final groupProvider = context.read<GroupProvider>();
+    final evaluationProvider = context.read<EvaluationProvider>();
+    final gradeProvider = context.read<GradeProvider>();
 
     try {
       // Load enrollments for this bundle if not loaded
@@ -410,9 +413,6 @@ class _ReportsTabState extends State<ReportsTab> {
       });
 
       // Fetch Groups, Periods, and Grades for the bundle
-      final groupProvider = context.read<GroupProvider>();
-      final evaluationProvider = context.read<EvaluationProvider>();
-      final gradeProvider = context.read<GradeProvider>();
 
       // Ensure groups are loaded
       await groupProvider.loadGroups();
@@ -435,27 +435,21 @@ class _ReportsTabState extends State<ReportsTab> {
       // Ensure periods are loaded for this bundle
       await evaluationProvider.loadBundlePeriods(bundle.id);
 
-      print('=== DEBUG _generateCoursePdf ===');
-      print('Groups loaded: ${groups.length}');
-      for (var g in groups) {
-        print('  Group: ${g.courseName}, ID: ${g.id}, BundleID: ${g.bundleId}');
-      }
+
 
       // Filter periods to only include those for groups in this bundle
       final groupIds = groups.map((g) => g.id).toSet();
-      print('Group IDs: $groupIds');
+
 
       final periods = evaluationProvider.periods
           .where((p) => groupIds.contains(p.groupId))
           .toList();
-      print('Periods filtered: ${periods.length}');
-      print('Students: ${students.length}');
-      print('Enrollments: ${enrollmentProvider.enrollments.length}');
+
 
       // Ensure grades are loaded for this bundle
       await gradeProvider.loadGradesByBundle(bundle.id);
 
-      print('About to call generateCourseReport...');
+
 
       await PdfService.generateCourseReport(
         bundle,

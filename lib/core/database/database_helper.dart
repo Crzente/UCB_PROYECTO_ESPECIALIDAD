@@ -21,7 +21,7 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 22, // Incremented to 22 to sync profile images
+      version: 23, // Incremented to 23 to support bundle_enrollments
       onCreate: _createDB,
       onUpgrade: _onUpgrade,
       onConfigure: _onConfigure,
@@ -217,6 +217,19 @@ class DatabaseHelper {
         academic_year INTEGER NOT NULL,
         created_at TEXT NOT NULL,
         is_active INTEGER DEFAULT 1
+      )
+    ''');
+
+    // 14. Bundle Enrollments
+    await db.execute('''
+      CREATE TABLE bundle_enrollments (
+        id TEXT PRIMARY KEY,
+        bundle_id TEXT NOT NULL,
+        student_id TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'En curso',
+        created_at TEXT NOT NULL,
+        FOREIGN KEY (bundle_id) REFERENCES course_bundles (id) ON DELETE CASCADE,
+        FOREIGN KEY (student_id) REFERENCES users (id) ON DELETE CASCADE
       )
     ''');
 
@@ -577,6 +590,31 @@ class DatabaseHelper {
         UPDATE users 
         SET profile_image = (SELECT profile_image FROM teachers WHERE teachers.user_id = users.id) 
         WHERE EXISTS (SELECT 1 FROM teachers WHERE teachers.user_id = users.id AND teachers.profile_image IS NOT NULL)
+      ''');
+    }
+
+    if (oldVersion < 23) {
+      // 14. Bundle Enrollments 
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS bundle_enrollments (
+          id TEXT PRIMARY KEY,
+          bundle_id TEXT NOT NULL,
+          student_id TEXT NOT NULL,
+          status TEXT NOT NULL DEFAULT 'En curso',
+          created_at TEXT NOT NULL,
+          FOREIGN KEY (bundle_id) REFERENCES course_bundles (id) ON DELETE CASCADE,
+          FOREIGN KEY (student_id) REFERENCES users (id) ON DELETE CASCADE
+        )
+      ''');
+
+      // Migrate existing bundle enrollments from individual groups
+      await db.execute('''
+        INSERT INTO bundle_enrollments (id, bundle_id, student_id, status, created_at)
+        SELECT lower(hex(randomblob(16))), g.bundle_id, e.student_id, 'En curso', datetime('now')
+        FROM enrollments e
+        JOIN groups g ON e.group_id = g.id
+        WHERE g.bundle_id IS NOT NULL
+        GROUP BY g.bundle_id, e.student_id
       ''');
     }
   }

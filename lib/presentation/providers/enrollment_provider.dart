@@ -102,13 +102,13 @@ class EnrollmentProvider extends ChangeNotifier {
         );
       }
 
-      // 3. Get all groups that belong to this bundle ID
+      // 3. Save bundle enrollment
+      await enrollmentRepository.addStudentToBundle(studentId, bundleId);
+
+      // 4. Get all groups that belong to this bundle ID and enroll locally
       final allGroups = await groupRepository.getAllGroups();
       final groups = allGroups.where((g) => g.bundleId == bundleId).toList();
 
-      if (groups.isEmpty) {
-        throw Exception("Este curso no tiene materias asignadas todavía.");
-      }
 
       for (var group in groups) {
         final enrollmentId = const Uuid().v4();
@@ -210,33 +210,18 @@ class EnrollmentProvider extends ChangeNotifier {
         "Auto-enrolling students for new group: ${newGroup.courseName ?? newGroup.id} (Bundle ID: ${newGroup.bundleId})",
       );
 
-      // 1. Get all groups in this bundle
-      final allGroups = await groupRepository.getAllGroups();
-
-      // Filter for same bundle: Use bundleId if present (best), fall back to name
-      final bundleGroups = allGroups.where((g) {
-        if (newGroup.bundleId != null && g.bundleId != null) {
-          return g.bundleId == newGroup.bundleId && g.id != newGroup.id;
-        }
-        return g.name == newGroup.name && g.id != newGroup.id;
-      }).toList();
-
-      if (bundleGroups.isEmpty) {
-        debugPrint("No existing groups in this bundle. No students to copy.");
-        return; // First group in the bundle, no students to copy yet.
+      if (newGroup.bundleId == null) {
+        debugPrint("No bundle configured for this group. No students to auto-enroll.");
+        return;
       }
 
-      // 2. Collect unique student IDs enrolled in these groups.
-      final Set<String> studentIdsToEnroll = {};
+      // 1. Collect all students enrolled in this bundle.
+      final bundleEnrollments = await enrollmentRepository.getEnrollmentsByBundle(
+        newGroup.bundleId!,
+      );
+      
+      final Set<String> studentIdsToEnroll = bundleEnrollments.map((e) => e.studentId).toSet();
 
-      for (var bg in bundleGroups) {
-        final enrollments = await enrollmentRepository.getEnrollmentsByGroup(
-          bg.id,
-        );
-        for (var e in enrollments) {
-          studentIdsToEnroll.add(e.studentId);
-        }
-      }
 
       debugPrint(
         "Found ${studentIdsToEnroll.length} students to enrollment in new subject.",

@@ -2,18 +2,12 @@ import '../../domain/entities/course_bundle.dart';
 
 class CourseBundleModel extends CourseBundle {
   const CourseBundleModel({
-    required String id,
-    required String name,
-    required int academicYear,
-    required DateTime createdAt,
-    bool isActive = true,
-  }) : super(
-         id: id,
-         name: name,
-         academicYear: academicYear,
-         createdAt: createdAt,
-         isActive: isActive,
-       );
+    required super.id,
+    required super.name,
+    required super.academicYear,
+    required super.createdAt,
+    super.isActive = true,
+  });
 
   factory CourseBundleModel.fromMap(Map<String, dynamic> map) {
     return CourseBundleModel(

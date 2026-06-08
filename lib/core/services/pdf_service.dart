@@ -66,13 +66,6 @@ class PdfService {
     List<EvaluationPeriod> periods,
     GradeProvider gradeProvider,
   ) async {
-    print('=== generateCourseReport DEBUG ===');
-    print('Bundle: ${bundle.name}');
-    print('Students count: ${students.length}');
-    print('Groups count: ${groups.length}');
-    print('Enrollments count: ${enrollments.length}');
-    print('Periods count: ${periods.length}');
-
     final pdf = pw.Document();
     final ttf = await _loadFont();
 
@@ -127,13 +120,13 @@ class PdfService {
               ),
             ),
             pw.SizedBox(height: 20),
-            pw.Table.fromTextArray(
+            pw.TableHelper.fromTextArray(
               context: context,
               headers: [
                 'Grado',
                 'Compl.',
                 'Alumno',
-                ...groups.map((g) => g.courseName ?? 'Materia').toList(),
+                ...groups.map((g) => g.courseName ?? 'Materia'),
                 'Promedio',
               ],
               data: studentIds.map((sid) {
@@ -255,7 +248,7 @@ class PdfService {
               ),
               pw.SizedBox(height: 20),
 
-              pw.Table.fromTextArray(
+              pw.TableHelper.fromTextArray(
                 context: context,
                 headers: ['Materia', 'Promedio Final'],
                 columnWidths: {
@@ -266,8 +259,9 @@ class PdfService {
                   final enrollmentMatches = enrollments.where(
                     (e) => e.studentId == student.id && e.groupId == g.id,
                   );
-                  if (enrollmentMatches.isEmpty)
+                  if (enrollmentMatches.isEmpty) {
                     return [g.courseName ?? 'Materia', '-'];
+                  }
 
                   final enrollment = enrollmentMatches.first;
                   final groupPeriods = allPeriods.where(
@@ -341,14 +335,14 @@ class PdfService {
               style: pw.TextStyle(font: ttf),
             ),
             pw.SizedBox(height: 20),
-            pw.Table.fromTextArray(
+            pw.TableHelper.fromTextArray(
               context: context,
               headers: [
                 'N°',
                 'Grado',
                 'Compl.',
                 'Nombres y Apellidos',
-                ...periods.map((p) => p.name).toList(),
+                ...periods.map((p) => p.name),
                 'Promedio',
               ],
               columnWidths: {
@@ -460,7 +454,7 @@ class PdfService {
       'Grado',
       'Compl.',
       'Alumno',
-      ...groups.map((g) => g.courseName ?? 'Materia').toList(),
+      ...groups.map((g) => g.courseName ?? 'Materia'),
       'Promedio',
     ];
 
@@ -599,7 +593,7 @@ class PdfService {
       'Grado',
       'Compl.',
       'Nombres y Apellidos',
-      ...periods.map((p) => p.name).toList(),
+      ...periods.map((p) => p.name),
       'Promedio',
     ];
 

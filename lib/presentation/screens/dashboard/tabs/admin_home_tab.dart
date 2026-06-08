@@ -91,7 +91,7 @@ class _AdminHomeTabState extends State<AdminHomeTab> {
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.03),
+                        color: Colors.black.withValues(alpha: 0.03),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       ),
@@ -183,12 +183,12 @@ class _AdminHomeTabState extends State<AdminHomeTab> {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: gradient[0].withOpacity(0.1),
+            color: gradient[0].withValues(alpha: 0.1),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -200,7 +200,7 @@ class _AdminHomeTabState extends State<AdminHomeTab> {
           Positioned(
             right: -10,
             bottom: -10,
-            child: Icon(icon, size: 100, color: gradient[0].withOpacity(0.05)),
+            child: Icon(icon, size: 100, color: gradient[0].withValues(alpha: 0.05)),
           ),
           Padding(
             padding: const EdgeInsets.all(16),
@@ -219,7 +219,7 @@ class _AdminHomeTabState extends State<AdminHomeTab> {
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: gradient[0].withOpacity(0.3),
+                        color: gradient[0].withValues(alpha: 0.3),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       ),

@@ -2,36 +2,21 @@ import '../../domain/entities/enrollment.dart';
 
 class EnrollmentModel extends Enrollment {
   const EnrollmentModel({
-    required String id,
-    required String studentId,
-    required String groupId,
-    String? studentName,
-    String? groupName,
-    String? courseName,
-    String? bundleId,
-    String? bundleName,
-    int? academicYear,
-    String? grade,
-    String? specialty,
-    String? graduationYear,
-    int? courseSeniority,
-    String status = 'En curso',
-  }) : super(
-         id: id,
-         studentId: studentId,
-         groupId: groupId,
-         studentName: studentName,
-         groupName: groupName,
-         courseName: courseName,
-         bundleId: bundleId,
-         bundleName: bundleName,
-         academicYear: academicYear,
-         grade: grade,
-         specialty: specialty,
-         graduationYear: graduationYear,
-         courseSeniority: courseSeniority,
-         status: status,
-       );
+    required super.id,
+    required super.studentId,
+    required super.groupId,
+    super.studentName,
+    super.groupName,
+    super.courseName,
+    super.bundleId,
+    super.bundleName,
+    super.academicYear,
+    super.grade,
+    super.specialty,
+    super.graduationYear,
+    super.courseSeniority,
+    super.status = 'En curso',
+  });
 
   factory EnrollmentModel.fromMap(Map<String, dynamic> map) {
     return EnrollmentModel(

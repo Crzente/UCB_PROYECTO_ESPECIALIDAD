@@ -378,14 +378,14 @@ class _AcademicScreenState extends State<AcademicScreen> {
         context: context,
         builder: (ctx) => AlertDialog(
           title: Text(
-            "Materia con Alumnos",
+            "Materia con Notas Registradas",
             style: GoogleFonts.poppins(
               fontWeight: FontWeight.bold,
               color: Colors.orange,
             ),
           ),
           content: Text(
-            "Esta materia tiene alumnos con notas registradas. No se puede eliminar hasta que el curso sea archivado por completo.",
+            "Esta materia tiene notas registradas y no puede eliminarse. Para eliminarla, primero debe limpiar todas las notas o archivar el curso completo.",
             style: GoogleFonts.poppins(),
           ),
           actions: [
@@ -469,7 +469,7 @@ class _AcademicScreenState extends State<AcademicScreen> {
                 labelText: 'Gestión',
                 border: OutlineInputBorder(),
               ),
-              value: selectedYear,
+              initialValue: selectedYear,
               items: availableYears
                   .map(
                     (year) => DropdownMenuItem(
@@ -841,7 +841,7 @@ class _AcademicScreenState extends State<AcademicScreen> {
                     border: Border.all(color: Colors.grey.shade100),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.01),
+                        color: Colors.black.withValues(alpha: 0.01),
                         blurRadius: 5,
                         offset: const Offset(0, 2),
                       ),
@@ -1127,7 +1127,7 @@ class _AcademicScreenState extends State<AcademicScreen> {
                                 labelText: 'Tipo',
                                 border: OutlineInputBorder(),
                               ),
-                              value: selectedType,
+                              initialValue: selectedType,
                               items: const [
                                 DropdownMenuItem(
                                   value: 'theoretical',
@@ -1143,8 +1143,9 @@ class _AcademicScreenState extends State<AcademicScreen> {
                                 ),
                               ],
                               onChanged: (val) {
-                                if (val != null)
+                                if (val != null) {
                                   setState(() => selectedType = val);
+                                }
                               },
                             ),
                           ),
@@ -1661,7 +1662,7 @@ class _EnrollmentDialogContentState extends State<_EnrollmentDialogContent> {
         }
       }
 
-      if (mounted) {
+      if (context.mounted) {
         Navigator.pop(context);
 
         String message = "Cambios guardados.";
@@ -1678,12 +1679,12 @@ class _EnrollmentDialogContentState extends State<_EnrollmentDialogContent> {
         if (errors.isNotEmpty) {
           showDialog(
             context: context,
-            builder: (_) => AlertDialog(
+            builder: (ctx) => AlertDialog(
               title: const Text("Avisos"),
               content: SingleChildScrollView(child: Text(errors.join("\n"))),
               actions: [
                 TextButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () => Navigator.pop(ctx),
                   child: const Text("Ok"),
                 ),
               ],
@@ -1692,7 +1693,7 @@ class _EnrollmentDialogContentState extends State<_EnrollmentDialogContent> {
         }
       }
     } catch (e) {
-      if (mounted) {
+      if (context.mounted) {
         setState(() => isSaving = false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

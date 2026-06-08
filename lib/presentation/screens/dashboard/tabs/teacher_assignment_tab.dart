@@ -83,7 +83,7 @@ class _TeacherAssignmentTabState extends State<TeacherAssignmentTab> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -107,7 +107,7 @@ class _TeacherAssignmentTabState extends State<TeacherAssignmentTab> {
                 ),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<int>(
-                  value: _selectedYear,
+                  initialValue: _selectedYear,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 12,
@@ -153,7 +153,7 @@ class _TeacherAssignmentTabState extends State<TeacherAssignmentTab> {
                 ),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
-                  value: _selectedBundleId,
+                  initialValue: _selectedBundleId,
                   hint: const Text("Seleccione un curso..."),
                   isExpanded: true,
                   decoration: InputDecoration(
@@ -288,7 +288,7 @@ class _TeacherAssignmentTabState extends State<TeacherAssignmentTab> {
                             decoration: BoxDecoration(
                               color: isClosed
                                   ? Colors.grey.shade100
-                                  : Colors.blue.shade50.withOpacity(0.5),
+                                  : Colors.blue.shade50.withValues(alpha: 0.5),
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(
                                 color: isClosed

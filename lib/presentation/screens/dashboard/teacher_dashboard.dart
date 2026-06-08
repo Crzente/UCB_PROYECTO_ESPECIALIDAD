@@ -140,7 +140,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
         ),
       ),
       selected: isSelected,
-      selectedTileColor: Colors.orange.withOpacity(0.1),
+      selectedTileColor: Colors.orange.withValues(alpha: 0.1),
       onTap: () {
         setState(() {
           _selectedIndex = index;

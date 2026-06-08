@@ -111,7 +111,7 @@ class _GradesTabState extends State<GradesTab> {
           Switch(
             value: _showAllStudents,
             onChanged: (val) => setState(() => _showAllStudents = val),
-            activeColor: Colors.blue,
+            activeThumbColor: Colors.blue,
           ),
           const SizedBox(width: 8),
           Tooltip(
